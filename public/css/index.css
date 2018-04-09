@@ -1,0 +1,372 @@
+body{
+    background:#ECF0F5;
+    font-family:"Microsoft YaHei","Hiragino Sans GB";
+    padding-top:50px;
+    overflow:hidden;
+    box-sizing:border-box;
+}
+html,body{
+    height:100%;
+}
+/* 提示信息 */
+.error{
+    color:red;
+}
+#content{
+    height:100%;
+    background:url('../img/back.jpg') center no-repeat;
+}
+
+/* 头部导航 */
+#nav-top{
+    background-color:#f8f8f8;
+}
+.navbar-default .navbar-toggle{
+    border-color:rgb(160, 199, 216);
+}
+#nav-top a{
+    color:rgb(65, 63, 63);
+    line-height:50px;
+    padding:0 10px;
+}
+#nav-top a:hover{
+    background:rgb(126, 197, 245);
+}
+#nav-top.navbar{
+    margin-bottom:0;
+}
+.navbar-collapse.in{
+    height:120px;
+    overflow:auto;
+}
+/* 侧面导航 */
+
+#sidebar{
+    height:100%;
+    margin-top:-20px;
+    padding-right:0;
+}
+#content.row{
+    margin:0;
+    padding-left:0;
+}
+#box,.navbox-left{
+    height:100%;
+}
+.sideBar-menu{ 
+    margin:20px auto;
+    min-width:150px;
+    background:#222D32;
+    height:100%;
+} /*重写鼠标滑过的样式*/
+.nav-pills  li  a:hover {
+    background-color: #337ab7;
+    color: #fff;
+}
+/* 登录 */
+#loginsquar {
+    margin-top:100px;
+}
+#proFrm,#logFrm,#regFrm{
+    background:rgba(0, 0, 0, 0.27);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+    padding:25px;
+    width:350px;
+    position: relative;
+    z-index:1040;
+    border-radius:10px;
+}
+#regFrm label{
+    color:#fff;
+    font-weight:normal;
+}
+#logFrm legend,#regFrm legend{
+    color:#fff;
+}
+#logFrm .btn{
+    margin-top:30px;
+}
+/* 注册 */
+.info{
+    color:red;
+}
+em{
+    font-size:11px;
+}
+/* 用户管理 */
+table{
+    width:90%;
+    margin:0 auto;
+    text-align:center;
+}
+tr th,tr td{
+    padding:10px;
+    text-align:center;
+}
+#frm label{
+    width:70px;
+}
+#frm input{
+    background:#FAFAD1;
+}
+.btns{
+    margin-bottom:10px;
+}
+
+/* 个人信息中心，编辑 */
+.pro{
+   margin-top:80px;
+}
+#proFrm .border,#logFrm .border{
+    margin-top:25px;
+    height:38px;
+    border-radius:5px;
+    background:rgba(0,0,0,0.3);
+    color:#fff;
+}
+.border label{
+    height:38px;
+    line-height:38px;
+    font-weight:400;
+    padding-left:20px;
+    letter-spacing:10px; 
+}
+.border label span{
+    height:100%;
+    width:100%;
+    display:inline-block;
+    color:#fff;
+}
+
+#proFrm input,#logFrm input{
+    padding-left:10px;
+    border:none;
+    outline:none;
+    background:transparent;
+}
+#proFrm a{
+    float:right;
+    color:#fff;
+    font-weight:400;
+}
+#proFrm .propass{
+    overflow:hidden;
+}
+#proFrm .proimage{
+    margin:0 auto;
+    text-align:center;
+    position: relative;
+    border-radius:50%;
+    height:120px;
+    width:120px;
+}
+.prosave{
+    margin-top:30px;
+}
+.proimage img{
+   height:100%;
+   width:100%;
+}
+.proimage #file{
+    position: absolute;
+    top:0;
+    height:120px;
+    width:120px;
+    opacity:0;
+}
+#file .webuploader-pick{
+    width:120px;
+    height:120px;
+    position: absolute;
+    top:0
+}
+/* error */
+b{
+    display: block;
+    font-size:12px;
+    font-weight:400;
+}
+/* 用户头像 */
+.username .icon{
+    height:35px;
+    width:35px;
+    margin-top:-5px;
+}
+/*大纲管理*/
+#items,#outlines,#main{
+    height:100%;
+    overflow:auto;
+    background:#fff;
+    padding:10px;
+}
+#outlines #master{
+    padding:10px;
+    border:2px solid lavender;
+    position: relative;
+}
+#outlines #master legend{
+    margin:0 auto;
+    width:80px;
+    height:80px;
+    font-size:14px;
+    border-radius:50%;
+    border:2px solid lavender;
+    line-height:80px;
+    text-align:center;
+}
+#outlines ul li{
+   margin-top:10px;
+}
+#outlines  .float-right{
+    float:right;
+}
+#outlines  .margin-right{
+    margin-right: 15px;
+}
+/* 选择问题答案的样式select*/
+#sel{
+    position:fixed;
+    top:100px;
+    right:30px;
+    z-index:10;
+}
+#sel select{
+    display:none;
+}
+/* 选项 */
+#radio_option{
+    display:inline-block;
+}
+#master .write{
+    color:#f40;
+    font-size:14px;
+    font-weight:400;
+}
+#item-display{
+    font-size:60px;
+    float:right;
+    color:rgba(0, 0, 0, 0.27);
+    margin-right:60px;
+}
+#list{
+    list-style:none;
+    padding-left:0;
+}
+#list a{
+    display:block;
+}
+/* home页 */
+.center{
+    height:100%;
+    width:100%;
+    display:table;
+    position:relative;
+}
+.center .home{
+    display:table-cell;
+    vertical-align: middle; 
+    min-width:400px;
+    margin:0 auto;
+    color:rgba(255,255,255,0.4);
+    text-align:center;
+}
+.home p{
+    margin-top:30px;
+    font-weight:500;
+    letter-spacing:10px;
+}
+.hp1{
+    font-size:65px;
+}
+.hp2{
+    font-size:55px;
+}
+.hp3{
+    font-size:45px;
+}
+/* 问卷调查页 */
+body#answerbody{
+    margin-top:-60px;
+    background-color: #efefef;
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+    overflow:auto;
+}
+header{
+    width:100%;
+    height:80px;
+    background:#ee7419;
+}
+#header{
+    height:100%;
+    line-height:80px;
+    padding:0 5vw;
+}
+header a{
+    color:#fff;
+    font-size:20px;
+    vertical-align:middle;
+}
+header a:hover{
+     text-decoration:none;
+     color:#fff;
+}
+header .answer-login:before{
+    content: "?";
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    line-height: 25px;
+    color: #ee7419;
+    border-radius: 50%;
+    background-color: #fff;
+    margin-right:10px;
+ 
+}
+#answer-content{
+    width:90%;
+    margin:60px auto;
+    padding:2vw 5vw;
+    color:#666;
+    background:#fff;
+    box-shadow: 0 0 10px #aaa;
+    border-radius:4px;
+}
+#answer-content h2{
+    text-align:center;
+    color:#555;
+    font-size:24px;
+    margin-bottom:20px;
+}
+#answer-content .infor{
+    padding:3vw 0;
+    border-top: 2px solid #ccc;
+    border-bottom: 2px solid #ccc;
+}
+#answer-content .infor .title:hover{
+    background-color: #fcf0e5;
+}
+#answer-content .title{
+    padding:2vw 3vw;
+}
+#answer-content .title p{
+    font-weight:700;
+    font-size:16px;
+    color:#333;
+}
+#answer-content .title li{
+    margin-bottom:10px;
+}
+#showanswer footer{
+    height:80px;
+    width:100%;
+    line-height:80px;
+     text-align:center;
+}
+#showanswer footer .btn{
+    width:70px;
+    border: 1px solid #ee7419;
+    background-color: #ee7419;
+    color:#fff;
+   
+}

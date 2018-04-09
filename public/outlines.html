@@ -1,0 +1,262 @@
+<div id="outlines">
+	<div class="modal fade" id="myModal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					<form action="" @submit.prevent="save()" id="frm">
+						<legend>问卷分组信息</legend>
+						<p>
+							<label for="text">问卷名称:</label>
+							<input type="text" v-model.trim="text" id="text" autofocus>
+						</p>
+						<p>
+							<label for="pid">所属分组:</label>
+							<input type="text" v-model.trim="pid" id="pid" disabled>
+						</p>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal" @click="cancle()">Close</button>
+							<button type="submit" class="btn btn-primary" id="save">save</button>
+						</div>
+					</form>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+
+	<fieldset id="master">
+		<legend>大纲管理</legend>
+		<!-- <button type="button" class="btn  btn-success" @click="addShowModal()">添加问卷分组</button> -->
+		<!-- select下拉，选择评判items分组 -->
+		<p id="sel" class="form-group" v-show="questions.length">
+			<a href="#" id="item-display" @click="showSelect">
+				<span class="glyphicon glyphicon-circle-arrow-left"></span>
+			</a>
+			<select name="items" class="form-control" @change="getItems()">
+				<!-- 遍历groups，change事件选中的group分组号，传去后台，获取对应分组里的item，选项样式 -->
+				<option value="" disabled selected>请选择问卷答题项样式</option>
+				<option :value="group.group" v-for="(group,index) in groups" :key="'group'+index">分组样式:{{group.groupName}}</option>
+			</select>
+		</p>
+		<p class="write">请√选需要填写的问卷模块</p>
+		<ul class="list-group">
+			<li v-for="(outline,index) in outlines" :key="'outline' + index" class="list-group-item">
+				<strong class="text-primary">{{outline.text}}-{{outline.pid}}
+					<button type="button" class="btn btn-danger btn-sm  float-right margin-right" @click="delOutlines(outline.id)">删除</button>
+					<button type="button" class="btn  btn-success  btn-sm float-right " @click="addShowModal(outline.id)">添加</button>
+				</strong>
+				<ul class="list-group">
+					<li v-for="(child,index) in outline.children" :key="'child' +index" class="list-group-item">
+						<input type="checkbox" :value="child" v-model="questions"> {{child.text}}-{{child.pid}}
+						<div class="btn-group float-right btn-group-sm" role="group" aria-label="...">
+							<button type="button" class="btn btn-info" @click="editOutlines(child.pid,child.text,child.id)">编辑</button>
+							<button type="button" class="btn btn-danger" @click="delOutlines(child.id)">删除</button>
+						</div>
+					</li>
+				</ul>
+			</li>
+		</ul>
+		<!-- 选中的答卷 点击生成问卷，让这个答卷消失，让所有的答卷缩略信息显示，并写上各个答卷地址-->
+		<div v-show="questions.length!==0" class="write">点击右侧箭头生成答题选项</div>
+		<div class="panel panel-info" v-for="(question,index) in questions" :key="'question' + index">
+			<div class="panel-heading">{{question.text}}</div>
+			<span class="panel-body" id="radio_option" v-for="(item,index) in items" :key="'item' +index">
+				<input type="radio" :name="index">{{item.item}}
+			</span>
+		</div>
+		<p>
+			<button v-show="questions.length&&items.length" class="btn btn-info btn-block" @click="create">生成问卷</button>
+		</p>
+
+		<!-- 所有的答卷缩略信息显示，并写上各个答卷地址 -->
+		<div class="list-group">
+			<h3 class="text-info" v-show="qlists.length">问卷列表</h3>
+			<ul id="list">
+				<li class="list-group-item" v-for="(qlist,index) in qlists" :key="'qlists' + index">
+					{{qlist.title}}--{{qlist.ctime | formatDateTime}}--{{qlist.mtime | formatDateTime}}&nbsp;&nbsp;
+					<div class="btn-group float-right btn-group-sm float-right margin-right" role="group" aria-label="...">
+						<button class="btn btn-sm btn-info" @click="changeStatus(qlist.id,qlist.status,index)">{{qlist.status==1?'开始':'关闭'}}</button>
+						<button class="btn btn-sm btn-danger " @click="delQuestions(qlist.id)">删除</button>
+					</div>
+					<a :href="'http://127.0.0.1/showanswer.html#'+qlist.id">查看问卷：http://127.0.0.1/showanswer.html#{{qlist.id}}</a>
+				</li>
+			</ul>
+		</div>
+	</fieldset>
+</div>
+
+<script>
+	var vm = new Vue({
+		el: '#outlines',
+		data: {
+			id: '',
+			text: '',
+			pid: '',
+			outlines: [],//所有数据
+			questions: [],//被选中的问卷 checkbox
+			groups: [],//item选项分组信息,主要放上中下，明白程度，分数等，
+			items: [],
+			qlists: [],
+
+		},
+		created: function () {
+			var th = this;
+			$.get('/outlines', function (result) {
+				th.outlines = result.data
+			}),
+				$.get('/items/groups', function (result) {
+					th.groups = result.data//得到所有分组，用select遍历她，得到每个分组group
+				}),
+				th.getQuestion()
+		},
+		methods: {
+			addShowModal: function (pid) {
+				var th = this;
+				$('#myModal').modal('show');
+				$('#save').text('addSave');
+				th.pid = pid;
+			},
+			cancle: function () {
+				var th = this;
+				th.pid = '';
+				th.text = '';
+			},
+			delOutlines: function (id) {
+				var th = this;
+				if (confirm('确认删除吗？')) {
+					$.get('/outlines/del', { id: id }, function (res) {
+						if (res.error == 1) {
+							alert(res.message);
+							return
+						}
+						$.get('/outlines', function (result) {
+							th.outlines = result.data
+						})
+					})
+				}
+			},
+			editOutlines: function (pid, text, id) {
+				var th = this;
+				$('#myModal').modal('show');
+				$('#save').text('addSave');
+				th.pid = pid;
+				th.text = text;
+				th.id = id;
+				$('#pid').prop('disabled', false)
+			},
+			save: function () {
+				var th = this;
+				console.log(th.pid)
+				if (th.id == '') {//此时为添加问卷保存
+					$.post('/outlines/addSave', {
+						pid: th.pid,
+						text: th.text,
+					}, function (result) {
+						if (result.error == 0) {
+							$.get('/outlines', function (result) {
+								th.outlines = result.data
+							})
+						}
+					})
+					console.log(1)
+				} else {
+					$.post('/outlines/editSave', {//编辑保存
+						pid: th.pid,
+						text: th.text,
+						id: th.id,
+					}, function (result) {
+						if (result.error == 0) {
+							$.get('/outlines', function (result) {
+								th.outlines = result.data
+							})
+						}
+					})
+					console.log(2)
+				}
+				$('#myModal').modal('hide');
+			},
+			getItems: function () {//获取所需的答题选项
+				var group = event.target.value;//拿到选择选项的对应group分组号，传给后台，获取对应分组号具体的item
+				var th = this;
+				$.get('/items/getItems', { group: group }, function (result) {
+					if (result.error == 0) {
+						th.items = result.data;
+					}
+				})
+			},
+			showSelect: function () {//点击小圆圈出现下拉select选择选项样式
+				$('#sel span').toggleClass('glyphicon-circle-arrow-left glyphicon-circle-arrow-down').addClass('glyphicon ')
+				$('#sel select').fadeToggle('slow');
+			},
+			create: function () {//生成问卷
+				var th = this;
+				var data = {
+					"items": th.items,
+					"questions": th.questions,
+				}
+				$.post('/questions/create', {
+					content: JSON.stringify(data),
+					create_id: Cookies.get('username'),
+
+				})
+				//生成以后让问卷的题目答案样式的保存地方清空，问卷的题目答案样式界面消失，把生成的问卷详情展示出来,getquestion
+				console.log(th.questions)
+				th.questions = [];
+				th.items = [];
+				th.getQuestion()//每次点击提交再调用一次，获取最新的问卷列表
+			},
+			getQuestion: function () {//把生成的问卷详情展示出来,getquestion
+				var th = this;
+				$.get('/questions/getQuestion', {
+					create_id: Cookies.get('username')
+				}, function (result) {
+					if (result.error == 0) {
+						th.qlists = result.data;
+					}
+				})
+			},
+			changeStatus: function (id, status, index) {//改变问卷列表对应的状态status
+				var th = this;
+				$.get('/questions/changeStatus', {
+					id: id,
+					status: status == 1 ? 0 : 1
+				}, function (result) {
+					if (result.error == 0) {
+						// th.getQuestion()//不用这个方法刷新，每次改变仅仅是status改变，不用再请求路由getQuestion，加重工作量
+						// console.log(th.qlists[index].status)
+						th.qlists[index].status = th.qlists[index].status == 1 ? 0 : 1
+					}
+				})
+			},
+			delQuestions: function (id) {
+				var th = this;
+				$.get('/questions/delQuestions', { id: id }, function (result) {
+					if (result.error == 0) {
+						th.getQuestion()
+					}
+				})
+			}
+		}
+	})
+
+	Vue.filter('formatDateTime', function (value) {
+		if (value == null) return;
+		var date = new Date(value);
+		var y = date.getFullYear();
+		var m = date.getMonth() + 1;
+		m = m < 10 ? ('0' + m) : m;
+		var d = date.getDate();
+		d = d < 10 ? ('0' + d) : d;
+		var h = date.getHours();
+		var minute = date.getMinutes();
+		minute = minute < 10 ? ('0' + minute) : minute;
+		return y + '-' + m + '-' + d + ' ' + h + ':' + minute;
+	});
+
+
+
+
+</script>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>问卷调查</title>
+    <link rel="stylesheet" type="text/css" href="./plugin/bootstrap-3.3.7/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="./css/index.css">
+    <script src="./plugin/vue.js"></script>
+</head>
+
+<body id="answerbody">
+    <div id="showanswer">
+        <header>
+            <div id="header">
+                <a href="javascript:void(0)" class="answer-login">问卷调查</a>
+            </div>
+        </header>
+        <div id="answer-content">
+            <h2>问卷调查</h2>
+            <div class="infor">
+                <div v-for="(question,index) in questions" :key="'questions' + index" class="title">
+                    <p>Q{{index+1}}&nbsp;{{question.text}}</p>
+                    <ul>
+                        <li v-for="(item,i) in items" :key="'items' + i">
+                           <label :for="index+item.item">{{item.item}}</label> 
+                            <input type="radio" :name="index" :value="item.item" :id="index+item.item">
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <footer>
+                <button type="button" class="btn">提交</button>
+            </footer>
+        </div>
+    </div>
+
+    <script src="./plugin/jquery.js"></script>
+    <script src="./plugin/js.cookie.js"></script>
+    <!-- <script src="./js/all.js"></script> -->
+
+    <script>
+        // console.log(location.hash.substr(1))
+        var vm = new Vue({
+            el: '#showanswer',
+            data: {
+                sel: '',
+                questions: {},
+                items: {}
+            },
+            created: function () {
+                var th = this;
+                $.get('/showanswer', {
+                    id: location.hash.substr(1)
+                }, function (result) {
+                    if (result.error == 0) {
+                        var res = JSON.parse(result.data.content);
+                        th.questions = res.questions;
+                        th.items = res.items;
+                    }
+                })
+            }
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,146 @@
+<div class="row pro">
+    <div id="profile" class="col-md-4 col-md-offset-4 col-xs-6 col-sm-6 col-xs-offset-3 col-sm-offset-3">
+        <form action="" id="proFrm">
+            <div class="proimage">
+                <img src="" alt="" class="img-circle img">
+                <div id="file">选择头像</div>
+                <!-- <button  id="btn" onclick="uploader.upload()">提交</button> -->
+            </div>
+
+            <div class="border">
+                <label for="username">
+                    <span class="glyphicon glyphicon-user"></span>
+                </label>
+                <input type="text" id="username" name="username">
+            </div>
+            <div class="border">
+                <label for="phone">
+                    <span class="glyphicon glyphicon-phone"></span>
+                </label>
+                <input type="text" id="phone" name="phone">
+            </div>
+            <div class="border">
+                <label for="email">
+                    <span class="glyphicon glyphicon-envelope"></span>
+                </label>
+                <input type="email" id="email" name="email">
+            </div>
+            <div class="propass">
+                <a href="javascript:voil(0)">更改密码</a>
+            </div>
+            <div class="prosave">
+                <button class="btn btn-info btn-block btn-lg" type="submit">保存</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="./plugin/js.cookie.js"></script>
+<script>
+
+    var imgSrc = '';
+    // 登录时后台传过来的cookie值，回填
+    proFrm.username.value = Cookies.get('username');
+    proFrm.phone.value = Cookies.get('phone');
+    proFrm.email.value = Cookies.get('email');
+    id = Cookies.get('id')
+
+    var cookiePhoto = Cookies.get('photo')
+    $('.img').prop('src', '/upload/' + cookiePhoto)
+    //头像的操作
+    var uploader = WebUploader.create({
+        // swf文件路径
+        swf: '/plugin/webuploader/Uploader.swf',
+        // 文件接收服务端。
+        server: '/upload',
+        // 选择文件的按钮。可选。
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+        pick: '#file',
+        // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+        resize: false,
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/*'
+        }
+    })
+
+    uploader.on('fileQueued', function (files) {//图片选中后触发
+        // console.log(files)
+        uploader.makeThumb(files, function (error, src) {//预览缩略图
+            if (error) {
+                $('.img').replaceWith('<span>不能预览</span>');
+                return;
+            }
+            $('.img').attr('src', src);//实时图片更新，选中就预览
+        }, 120, 120);
+        uploader.upload();//触发上传，减少上传按钮，选中就上传
+    });
+
+    uploader.on('uploadSuccess', function (file, result) {//上传成功，获取上传的新图片地址，下面让cookie里面photo改变成这个地址
+        imgSrc = result[0].filename;
+        console.log(imgSrc)
+        //  console.log(result[0].filename)
+    });
+
+
+    // 点击保存触发,验证不能为空,后提交
+    $('#proFrm').validate({
+        rules: {
+            username: {
+                required: true,
+                rangelength: [2, 18],
+            },
+            email: {
+                required: true,
+                email: true,
+            },
+            phone: {
+                required: true,
+                number: true,
+                rangelength: function (el) {
+                    var reg = /^(1[3|4|5|7|8][0-9]{9})$/;
+                    if (reg.test(el.value)) {
+                        return [11, 11]
+                    } else {
+                        return false
+                    }
+                }
+            },
+        },
+        messages: {
+            username: {
+                required: '用户名不能为空',
+                remote: '该用户名已被注册'
+            },
+            phone: {
+                required: '请输入手机号',
+                number: '手机号必须是数字',
+                rangelength: '请正确填写您的手机号'
+            },
+            email: {
+                required: '请输入邮箱'
+            },
+        },
+        errorElement: "b",
+        submitHandler: function (form) {
+            $.post('/users/proSave', {
+                username: proFrm.username.value,
+                phone: proFrm.phone.value,
+                email: proFrm.email.value,
+                photo: imgSrc,
+                id: id
+            }, function (result) {
+                if (result.error == 0) {
+                    if (imgSrc) {
+                        Cookies.set('photo', imgSrc)
+                    }
+                    Cookies.set('username', proFrm.username.value);
+                    Cookies.set('phone', proFrm.phone.value);
+                    Cookies.set('email', proFrm.email.value);
+                    // $('.username').html('<img class="icon img-circle" src="/upload/'+ Cookies.set('photo') +'">');//放在主cs里面，登录后就设置
+                    location.href = '/index.html';
+                }
+            })
+        }
+    })
+</script>

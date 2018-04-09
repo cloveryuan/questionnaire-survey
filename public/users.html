@@ -1,0 +1,157 @@
+	<div id="main">
+		<div class="modal fade" id="myModal">
+			<div class="modal-dialog">
+			    <div class="modal-content">
+				    <div class="modal-body">
+				    	<form action="" @submit.prevent="save()" id="frm">
+				    		<legend>编辑个人信息</legend>
+				    		<p>
+					       		<label for="username">username:</label>
+					       		<input type="text" v-model.trim="username" id="username" autofocus>
+					       </p>
+					       <p>
+						       	<label for="email">email:</label>
+						       	<input type="email" v-model.trim="email" id="email">
+					       </p>
+					        <p>
+						       	<label for="phone">phone:</label>
+						       	<input type="number" v-model.trim="phone" id="phone">
+					       </p>
+					       <div class="modal-footer">
+						        <button type="button" class="btn btn-default" data-dismiss="modal" @click="cancle()">Close</button>
+					        	<button type="submit" class="btn btn-primary" id="save" >save</button>
+					        </div>
+				    	</form>
+				    </div>
+			    </div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+		<div class="text-center btns">
+			<h3>问卷调查人员汇总表</h3>
+			<button @click="addShowModal()" class="btn btn-default">添加员工</button>
+			<button class="btn btn-danger" @click="delAll()" v-show="users.length!==0">全部删除</button>
+		</div>
+		<table class="table-bordered table-hover">
+			<tr class="text-info">
+				<th>id</th>
+				<th>用户名</th>
+				<th>邮箱</th>
+				<th>电话</th>
+				<th>操作</th>
+			</tr>
+			<tr v-for="user in users" :key="'user' + user.id">
+				<td v-for="(item) in user" >{{item}}</td>
+				<td>
+					<button @click="deluser(user.id)" class="btn btn-danger btn-xs">删除</button>
+					<button @click="edituser(user.id)" class="btn btn-info btn-xs">编辑</button>
+				</td>
+			</tr>
+			<tr v-show="users.length==0">
+				<td colspan="5" class="text-center text-muted">
+					<p>暂无信息·····</p>
+				</td>
+			</tr>
+		</table>		
+	</div>
+	<script>
+
+		var vm = new Vue({
+			el:'#main',
+			data:{
+				username:'',
+				email:'',
+				phone:'',
+				id:'',
+				users:[],//数据库原有数据渲染
+			},
+			created:function(){
+				//获取数据
+				var th = this
+				$.get('/users/show',function(res){
+					//展示数据
+					// console.log(res)
+					th.users = res.data
+				})
+			},
+			methods:{
+				addShowModal:function(){
+					$('#myModal').modal('show');
+					$('#save').text('addSave');
+				},
+				cancle:function(){
+					var th = this
+					th.username ='';
+					th.email = '';
+					th.phone = '';
+					th.id = '';
+				},
+				deluser:function(id){
+					var th = this;
+					if(confirm('确认删除吗？')){
+						$.get('/users/del',{id:id},function(res){
+							//获取数据
+							$.get('/users/show',function(res){
+								th.users = res.data
+							})
+						})
+					}
+				},
+				save:function(){
+					var th = this;					
+					if(th.id!=''){
+						$.post('/users/editSave',{
+							username:th.username,
+							email:th.email,
+							phone:th.phone,
+							id:th.id
+						},function(res){
+							//获取数据
+							$.get('/users/show',function(res){
+								th.users = res.data;
+							})
+						})
+						console.log(2)
+					}else{
+						$.post('/users/addSave',{
+							username:th.username,
+							email:th.email,
+							phone:th.phone,
+						},function(res){
+							//获取数据
+							$.get('/users/show',function(res){
+								th.users = res.data;
+							})
+						})
+						console.log(3)
+					}
+					th.username ='';
+					th.email = '';
+					th.phone = '';
+					th.id = '';
+					$('#myModal').modal('hide')
+				},
+				edituser:function(id){//查询数据，回填，编辑，保存
+					var th=this;
+					$('#myModal').modal('show');
+					$('#save').text('editSave')
+					$.get('/users/getUsers',{id:id},function(res){
+						th.username = res.data.username;
+						th.email = res.data.email;
+						th.phone = res.data.phone;
+						th.id = res.data.id
+					})
+				},
+				delAll:function(){
+					if(!confirm('确认删除吗？')){
+			 			return 
+			 		};
+					this.users=[];
+					$.get('/users/delAll',function(){
+						$.get('/users/show',function(res){
+							th.users = res.data;
+						})
+					})
+				}
+			}
+		})
+	</script>

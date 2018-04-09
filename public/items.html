@@ -1,0 +1,136 @@
+<div id="items" class="col-md-12 col-xs-12 col-sm-12">
+	<div class="modal fade" id="myModal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					<form action="" @submit.prevent="save()" id="frm">
+						<legend>编辑选项信息</legend>
+						<p>
+							<label for="item">选项:</label>
+							<input type="text" v-model.trim="item" id="item" autofocus>
+						</p>
+						<p>
+							<label for="group">分组:</label>
+							<input type="text" v-model.trim="group" id="group">
+						</p>
+						<p>
+							<label for="sort">排序:</label>
+							<input type="number" v-model.trim="sort" id="sort">
+						</p>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal" @click="cancle()">Close</button>
+							<button type="submit" class="btn btn-primary" id="save">save</button>
+						</div>
+					</form>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+	<div class="text-center btns">
+		<h3>问卷选项管理</h3>
+		<button @click="addShowModal()" class="btn btn-default">添加问卷分组</button>
+	</div>
+	<table class="table table-bordered table-hover">
+		<thead>
+			<tr class="text-info">
+				<th>id</th>
+				<th>选项</th>
+				<th>分组</th>
+				<th>排序</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr v-for="(item,index) in items" :key="'item' + index">
+				<td v-for="(value) in item">{{value}}</td>
+				<td>
+					<button class="btn btn-danger btn-xs" @click="delItem(item.id)">删除</button>
+					<button class="btn btn-info btn-xs" @click="editItem(item.id)">编辑</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<script>
+	var vm = new Vue({
+		el: '#items',
+		data: {
+			item: '',
+			group: '',
+			sort: '',
+			id: '',
+			items: [],
+		},
+		created: function () {
+			var th = this;
+			$.get('/items', function (result) {
+				th.items = result.data
+			})
+		},
+		methods: {
+			addShowModal: function () {
+				$('#myModal').modal('show');
+				$('#save').text('addSave');
+			},
+			delItem: function (id) {
+				var th = this;
+				if (confirm('确认删除吗？')) {
+					$.get('/items/del', { id: id }, function (res) {
+						$.get('/items', function (result) {
+							th.items = result.data
+						})
+					})
+				}
+			},
+			cancle: function () {
+				var th = this
+				th.item = '';
+				th.group = '';
+				th.sort = '';
+				th.id = '';
+			},
+			editItem: function (id) {
+				var th = this;
+				$('#myModal').modal('show');
+				$('#save').text('editSave');
+				$.post('/items/getUsers', { id: id }, function (res) {
+					th.item = res.data.item;
+					th.group = res.data.group;
+					th.sort = res.data.sort;
+					th.id = res.data.id
+				})
+			},
+			save:function () {
+				var th = this;
+				if (th.id!='') {//此时为编辑保存
+					$.post('/items/editSave', {
+						item: th.item,
+						group: th.group,
+						sort: th.sort,
+						id: th.id
+					}, function (result) {
+						$.get('/items', function (result) {
+							th.items = result.data
+						})
+					})
+				}else{
+					$.post('/items/addSave',{
+						item: th.item,
+						group: th.group,
+						sort: th.sort,
+					},function(result){
+						$.get('/items', function (result) {
+							th.items = result.data
+						})
+					})
+				}
+				$('#myModal').modal('hide');
+			}
+
+		}
+	})
+</script>

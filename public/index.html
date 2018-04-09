@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="stylesheet" type="text/css" href="./plugin/bootstrap-3.3.7/dist/css/bootstrap.css">
+	<link rel="stylesheet" href="./css/index.css">
+	<link rel="stylesheet" href="./plugin/animate/animate.min.css">
+	<script src="./plugin/vue.js"></script>
+</head>
+
+<body>
+	<div class="container-fuilt" id="box">
+		<nav class="navbar navbar-default navbar-fixed-top" role="navigation" id="nav-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
+						<span class="sr-only">切换导航</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a href="/index.html" class="navbar-brand">首页</a>
+				</div>
+				<div class="collapse navbar-collapse" id="navbar-menu">
+					<ul class="nav navbar-nav navbar-right header-right">
+						<li class="login1">
+							<a href="#" class="username">用户</a>
+						</li>
+						<li>
+							<a href="javascript:void(0);" class="login2" onclick="demo.index.jump('login')">登录</a>
+						</li>
+						<li>
+							<a href="javascript:void(0)" class="login2" onclick="demo.index.jump('register')">注册</a>
+						</li>
+						<li>
+							<a href="javascript:void(0)" class="login1" onclick="demo.index.jump('profile')">个人中心</a>
+						</li>
+						<li class="login1">
+							<a href="javascript:void(0)" onclick="demo.index.logout()">注销</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<div class="row navbox-left">
+			<div id="sidebar" class="col-md-2 col-xs-2 col-sm-2">
+				<div class="sideBar-menu  ">
+					<ul class="nav  nav-pills  nav-stacked">
+						<li role="presentation" class="active">
+							<a href="#">
+								<span class="glyphicon glyphicon-home">&nbsp;&nbsp;</span>菜单栏
+							</a>
+						</li>
+						<li role="presentation" v-if="auth>=2" id="users">
+							<!-- <a href="javascript:void(0)" onclick="demo.index.jump('users')"> -->
+							<a href="#/users">
+								<span class=" glyphicon  glyphicon-user">&nbsp;&nbsp;</span>用户管理
+							</a>
+						</li>
+						<li role="presentation" v-if="auth>=2" id="users">
+							<a href="#/items">
+								<span class=" glyphicon glyphicon-pencil">&nbsp;&nbsp;</span>分组管理
+							</a>
+						</li>
+						<li role="presentation" class="">
+							<a href="#/outlines">
+								<span class=" glyphicon glyphicon-book">&nbsp;&nbsp;</span>大纲管理
+							</a>
+						</li>
+						<li role="presentation" class="">
+							<a href="javascript:void(0)">
+								<span class=" glyphicon glyphicon-pencil">&nbsp;&nbsp;</span>碎碎念</a>
+						</li>
+						<li role="presentation" class="">
+							<a href="javascript:void(0)">
+								<span class=" glyphicon  glyphicon-book">&nbsp;&nbsp;</span>留言板</a>
+						</li>
+						<li role="presentation" class="">
+							<a href="javascript:void(0)">
+								<span class=" glyphicon  glyphicon-heart">&nbsp;&nbsp;</span>情感语
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div id="content" class="col-md-10 col-xs-10 col-sm-10 row">
+				<div class="center">
+					<div class="home">
+						<p class="hp1 animated fadeInDown">Age of Big Data</p>
+						<p class="hp2 animated fadeInUp">Ever since I met you</p>
+						<p class="hp3 animated fadeInUp">start with me</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<script src="./plugin/jquery.js"></script>
+	<script src="./plugin/bootstrap-3.3.7/dist/js/bootstrap.js"></script>
+	<script src="./plugin/js.cookie.js"></script>
+	<script src="./plugin/webuploader/webuploader.js"></script>
+	<script src="./plugin/dist/jquery.validate.js"></script>
+	<script src="./plugin/dist/localization/messages_zh.min.js"></script>
+	<script src="./js/all.js"></script>
+	<script>
+
+		//创造一个vue实例,如果auth存在且为2，就会出现管理菜单
+		var vm = new Vue({
+			el: '#sidebar',
+			data: {
+				auth: 0
+			},
+			created: function () {
+				// console.log(Cookies.get('auth'));
+				this.auth = Cookies.get('auth');
+			}
+		})
+	</script>
+</body>
+
+</html>

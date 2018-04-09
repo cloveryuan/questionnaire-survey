@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" /> 
+    <link href="http://hovertree.com/texiao/jquery/87/hovertreeanswer.css" rel="stylesheet" />
+    <style>
+        h2{color:white;text-align:center;}
+        a{color:deeppink;font-size:16px;}
+    </style>
+</head>
+
+<body style="background-color:#1fc587">
+
+    <div class="wrapper">
+        <br />
+        <div id="answer" class="card_wrap">
+            <!--Q1-->
+            <div class="card_cont card1">
+                <div class="card">
+                    <p class="question"><span>Q1、</span>你第一门接触的编程语言是？</p>
+                    <ul class="select">
+                        <li>
+                            <input id="q1_1" type="radio" name="r-group-1">
+                            <label for="q1_1">JavaScript</label>
+                        </li>
+                        <li>
+                            <input id="q1_2" type="radio" name="r-group-1">
+                            <label for="q1_2">C语言</label>
+                        </li>
+                        <li>
+                            <input id="q1_3" type="radio" name="r-group-1">
+                            <label for="q1_3">Java</label>
+                        </li>
+                        <li>
+                            <input id="q1_4" type="radio" name="r-group-1">
+                            <label for="q1_4">C#</label>
+                        </li>
+                        <li>
+                            <input id="q1_5" type="radio" name="r-group-1">
+                            <label for="q1_5">其他</label>
+                        </li>
+                    </ul>
+                    <div class="card_bottom"><span><b>1</b>/5</span></div>
+                </div>
+            </div>
+        </div><!--/card_wrap-->
+        <br /><br />
+    </div>
+    <script src="http://hovertree.com/texiao/jquery/87/hovertreeanswer.js"></script>
+    <script>
+	   var vm = new Vue({
+            el:'#answer',
+            data:{
+                
+            },
+            created:function(){
+                $("#answer").answerSheet({});
+            },
+            methods:function(){
+                
+            }
+       })
+		
+	
+    </script>
+</body>
+
+</html>
